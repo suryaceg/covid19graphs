@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>D3.js Example</title>
+</head>
+<body>
+
+  <div id="content">
+    <svg id="confirmed" width="450" height="225" viewBox="0 0 100% 60" preserveAspectRatio="xMidYMid meet">
+  </div>
+   <div id="content">
+    <svg id="recovered" width="450" height="225" viewBox="0 0 100% 60" preserveAspectRatio="xMidYMid meet">
+  </div>
+   <div id="content">
+    <svg id="deceased" width="450" height="225" viewBox="0 0 100% 60" preserveAspectRatio="xMidYMid meet">
+  </div>
+
+  <!-- Add jQuery and D3.js libraries -->
+  <script
+  src="https://code.jquery.com/jquery-3.4.1.min.js"
+  integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
+  crossorigin="anonymous"></script>
+  <script src="https://d3js.org/d3.v5.min.js"></script>
+
+  <!-- Our Script -->
+
+  <script>
+function draw_graph(timeseries) {
+            const width = 100;
+            const height = 60;
+            const padding = 10;
+
+            const svg = d3.select('#confirmed')
+
+            /**
+             * Create the X scale function which will convert the dates in the data to a value
+             * between 0 to 100 (widht of our graph).
+             *
+             * Domain sets the value we will provide
+             * Range sets the value `x` will return
+             **/
+            const x = d3.scaleTime()
+                .domain(d3.extent(timeseries, function(d) {
+                    return new Date(d.date + "2020");
+                }))
+                .range([padding, width - padding])
+
+            /**
+             * Similarly describe the `y` scale function which will take in the integer value
+             * in the range of the confirmed cases and return a value between Height and 0
+             * 
+             * IMPORTANT: since we count from top, we need to set it from height (big value) to
+             *  zero (so that the graph is drawn from the bottom)
+             *
+             **/
+            const y = d3.scaleLinear()
+                .domain(d3.extent(timeseries, function(d) {
+                    return parseInt(d.dailyconfirmed);
+                }))
+                .range([height - padding, padding])
+
+
+            // Add the line
+            svg.append("path")
+                .datum(timeseries)
+                .attr('fill', 'none')
+                .attr('stroke', 'red')
+                .attr('stroke-width', 1)
+                .attr('opacity', 0.4)
+                .attr('d', d3.line()
+                    .x(function(d) {
+                        return x(new Date(d.date + "2020"));
+                    }) // Use the x we defined before
+                    .y(function(d) {
+                        return y(parseInt(d.dailyconfirmed));
+                    }) // use the y we defined before
+                    .curve(d3.curveCardinal)
+                )
+                // Make it darker when mouse enters
+                .on('mouseover', function() {
+                    d3.select(this)
+                        .attr('opacity', 0.8)
+                })
+                // Make it lighter when mouse leaves
+                .on('mouseout', function() {
+                    d3.select(this)
+                        .attr('opacity', 0.4)
+                })
+
+          
+        }
+        
+        
+        
+        function draw_graph1(timeseries) {
+            const width = 100;
+            const height = 60;
+            const padding = 10;
+
+            const svg = d3.select('#recovered')
+
+            /**
+             * Create the X scale function which will convert the dates in the data to a value
+             * between 0 to 100 (widht of our graph).
+             *
+             * Domain sets the value we will provide
+             * Range sets the value `x` will return
+             **/
+            const x = d3.scaleTime()
+                .domain(d3.extent(timeseries, function(d) {
+                    return new Date(d.date + "2020");
+                }))
+                .range([padding, width - padding])
+
+            /**
+             * Similarly describe the `y` scale function which will take in the integer value
+             * in the range of the confirmed cases and return a value between Height and 0
+             * 
+             * IMPORTANT: since we count from top, we need to set it from height (big value) to
+             *  zero (so that the graph is drawn from the bottom)
+             *
+             **/
+            const y = d3.scaleLinear()
+                .domain(d3.extent(timeseries, function(d) {
+                    return parseInt(d.dailyrecovered);
+                }))
+                .range([height - padding, padding])
+
+
+            // Add the line
+            svg.append("path")
+                .datum(timeseries)
+                .attr('fill', 'none')
+                .attr('stroke', 'red')
+                .attr('stroke-width', 1)
+                .attr('opacity', 0.4)
+                .attr('d', d3.line()
+                    .x(function(d) {
+                        return x(new Date(d.date + "2020"));
+                    }) // Use the x we defined before
+                    .y(function(d) {
+                        return y(parseInt(d.dailyrecovered));
+                    }) // use the y we defined before
+                    .curve(d3.curveCardinal)
+                )
+                // Make it darker when mouse enters
+                .on('mouseover', function() {
+                    d3.select(this)
+                        .attr('opacity', 0.8)
+                })
+                // Make it lighter when mouse leaves
+                .on('mouseout', function() {
+                    d3.select(this)
+                        .attr('opacity', 0.4)
+                })
+
+          
+        }
+        
+        
+        function draw_graph2(timeseries) {
+            const width = 100;
+            const height = 60;
+            const padding = 10;
+
+            const svg = d3.select('#deceased')
+
+            /**
+             * Create the X scale function which will convert the dates in the data to a value
+             * between 0 to 100 (widht of our graph).
+             *
+             * Domain sets the value we will provide
+             * Range sets the value `x` will return
+             **/
+            const x = d3.scaleTime()
+                .domain(d3.extent(timeseries, function(d) {
+                    return new Date(d.date + "2020");
+                }))
+                .range([padding, width - padding])
+
+            /**
+             * Similarly describe the `y` scale function which will take in the integer value
+             * in the range of the confirmed cases and return a value between Height and 0
+             * 
+             * IMPORTANT: since we count from top, we need to set it from height (big value) to
+             *  zero (so that the graph is drawn from the bottom)
+             *
+             **/
+            const y = d3.scaleLinear()
+                .domain(d3.extent(timeseries, function(d) {
+                    return parseInt(d.dailydeceased);
+                }))
+                .range([height - padding, padding])
+
+
+            // Add the line
+            svg.append("path")
+                .datum(timeseries)
+                .attr('fill', 'none')
+                .attr('stroke', 'red')
+                .attr('stroke-width', 1)
+                .attr('opacity', 0.4)
+                .attr('d', d3.line()
+                    .x(function(d) {
+                        return x(new Date(d.date + "2020"));
+                    }) // Use the x we defined before
+                    .y(function(d) {
+                        return y(parseInt(d.dailydeceased));
+                    }) // use the y we defined before
+                    .curve(d3.curveCardinal)
+                )
+                // Make it darker when mouse enters
+                .on('mouseover', function() {
+                    d3.select(this)
+                        .attr('opacity', 0.8)
+                })
+                // Make it lighter when mouse leaves
+                .on('mouseout', function() {
+                    d3.select(this)
+                        .attr('opacity', 0.4)
+                })
+
+          
+        }
+
+        /**
+         * Main function triggered as soon as the file is fully loaded
+         *
+         **/
+        $(document).ready(function() {
+            const url = "https://api.covid19india.org/data.json";
+
+            $.get(url).done(function(data) {
+                draw_graph(data.cases_time_series);
+                draw_graph1(data.cases_time_series);
+                draw_graph2(data.cases_time_series);
+            });
+        });
+  </script>
+</body>
+</html>
