@@ -3,8 +3,23 @@
 <head>
   <meta charset="UTF-8">
   <title>D3.js Example</title>
+  <style>
+   .axis text {
+       font: 8px sans-serif;
+   }
+   /* This is the small lines in the axis */
+   .axis line {
+       stroke-width: 0.8;
+       stroke: orange;
+   }
+   /* This is the big connecting line */
+   .domain {
+       stroke: green;
+   }
+  </style>
 </head>
 <body>
+    <h3>See https://www.d3-graph-gallery.com/ for more tutorials</h3>
 
   <div id="content">
     <svg id="confirmed" width="450" height="225" viewBox="0 0 100% 60" preserveAspectRatio="xMidYMid meet">
@@ -64,15 +79,22 @@ function draw_graph(timeseries) {
             // Add the line
             svg.append("path")
                 .datum(timeseries)
-                .attr('fill', 'none')
-                .attr('stroke', 'red')
-                .attr('stroke-width', 1)
-                .attr('opacity', 0.4)
-                .attr('d', d3.line()
+                .attr('fill', 'blue')  // this has been changed from none to blue
+                .attr('stroke', 'red') // you can remove this line if you don't want an outline.
+                .attr('stroke-width', 0) // this has been set to 0
+                .attr('opacity', 1)
+                .attr('d', d3.area()  // IMPORTANT: Change line to area
                     .x(function(d) {
+                        /**
+                         * X is used here to convert the date into pixel values
+                         */
                         return x(new Date(d.date + "2020"));
-                    }) // Use the x we defined before
-                    .y(function(d) {
+                    })
+                    .y0(y(0))  // For area set y0 and y1 
+                    .y1(function(d) {
+                        /**
+                         * Y is used here to convert the confirmed value into Y pixel values
+                         */
                         return y(parseInt(d.dailyconfirmed));
                     }) // use the y we defined before
                     .curve(d3.curveCardinal)
@@ -85,7 +107,7 @@ function draw_graph(timeseries) {
                 // Make it lighter when mouse leaves
                 .on('mouseout', function() {
                     d3.select(this)
-                        .attr('opacity', 0.4)
+                        .attr('opacity', 0.8)
                 })
 
           
@@ -127,6 +149,19 @@ function draw_graph(timeseries) {
                 }))
                 .range([height - padding, padding])
 
+            /**
+             *  Adding Y Axis to the graph, Add a "g" object (like div in html)
+             *  - Move the g a little bit to the right so the axis text is visible
+             */
+            svg.append('g')
+                .attr('class', 'axis') // defining the axis class to adjust the styles, look at the header for styles
+                .attr('transform', 'translate(25, 0)')
+                .call(d3.axisLeft(y).ticks(3))
+
+            svg.append('g')
+                .attr('class', 'axis') // defining the axis class to adjust the styles, look at the header for styles
+                .attr('transform', 'translate(0, ' + height + ')')
+                .call(d3.axisBottom(x).ticks(3))
 
             // Add the line
             svg.append("path")
